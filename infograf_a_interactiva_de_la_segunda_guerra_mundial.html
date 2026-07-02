@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segunda Guerra Mundial: Línea de Tiempo e Innovaciones</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+        }
+        .historical-title {
+            font-family: 'Cinzel', serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="text-slate-100 antialiased min-h-screen" x-data="wwiiApp()">
+
+    <!-- TOP DECORATIVE BAR -->
+    <div class="h-2 bg-gradient-to-r from-red-800 via-amber-600 to-slate-700"></div>
+
+    <!-- HEADER SECTION -->
+    <header class="relative py-16 px-6 overflow-hidden border-b border-slate-800/80 bg-slate-950">
+        <!-- Abstract Background Glows -->
+        <div class="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/2 right-1/4 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-900/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <span class="text-xs font-bold tracking-[0.2em] text-amber-500 uppercase bg-amber-500/10 px-4 py-1.5 rounded-full border border-amber-500/20">
+                1939 — 1945
+            </span>
+            <h1 class="historical-title text-4xl md:text-6xl font-extrabold tracking-wide mt-6 text-slate-100 leading-tight">
+                SEGUNDA GUERRA MUNDIAL
+            </h1>
+            <p class="text-amber-500/90 text-lg md:text-xl font-medium mt-2 tracking-wide max-w-2xl mx-auto">
+                Cronología del conflicto y las tecnologías que transformaron la humanidad
+            </p>
+            <p class="mt-4 text-sm md:text-base text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                Un análisis visual interactivo que entrelaza los hitos bélicos y geopolíticos más determinantes con la explosión de innovación tecnológica y científica que redefinió el siglo XX.
+            </p>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto border-t border-slate-800/80 pt-8">
+                <div class="p-4 bg-slate-900/40 rounded-xl border border-slate-800/50 backdrop-blur-sm">
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Duración</p>
+                    <p class="text-xl md:text-2xl font-bold text-slate-200 mt-1">6 Años y 1 Día</p>
+                </div>
+                <div class="p-4 bg-slate-900/40 rounded-xl border border-slate-800/50 backdrop-blur-sm">
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Víctimas Est.</p>
+                    <p class="text-xl md:text-2xl font-bold text-red-500 mt-1">70-85 Millones</p>
+                </div>
+                <div class="p-4 bg-slate-900/40 rounded-xl border border-slate-800/50 backdrop-blur-sm">
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Países Involucrados</p>
+                    <p class="text-xl md:text-2xl font-bold text-slate-200 mt-1">Más de 30</p>
+                </div>
+                <div class="p-4 bg-slate-900/40 rounded-xl border border-slate-800/50 backdrop-blur-sm">
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Eje vs. Aliados</p>
+                    <p class="text-xl md:text-2xl font-bold text-amber-500 mt-1">Dos Bloques</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- INTERACTIVE SECTION NAVIGATION -->
+    <div class="bg-slate-950 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
+        <div class="max-w-6xl mx-auto px-4 flex justify-center space-x-2 md:space-x-4 py-4">
+            <button 
+                @click="currentTab = 'timeline'"
+                :class="currentTab === 'timeline' ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'"
+                class="px-5 py-2.5 rounded-lg text-sm md:text-base transition-all duration-300 flex items-center gap-2">
+                <i class="fa-solid fa-timeline"></i>
+                Línea de Tiempo
+            </button>
+            <button 
+                @click="currentTab = 'innovations'"
+                :class="currentTab === 'innovations' ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'"
+                class="px-5 py-2.5 rounded-lg text-sm md:text-base transition-all duration-300 flex items-center gap-2">
+                <i class="fa-solid fa-microscope"></i>
+                Innovaciones Tecnológicas
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE CONTENT AREA -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+
+        <!-- TAB 1: INTERACTIVE TIMELINE -->
+        <div x-show="currentTab === 'timeline'" x-transition:enter="transition ease-out duration-300 transform opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+            
+            <!-- Filters -->
+            <div class="mb-12 bg-slate-900/40 border border-slate-800/80 rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-filter text-amber-500"></i>
+                        Filtrar Acontecimientos
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Focaliza tu visualización en un frente específico del conflicto mundial.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button 
+                        @click="timelineFilter = 'all'"
+                        :class="timelineFilter === 'all' ? 'bg-slate-700 text-slate-100 border-slate-600' : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'"
+                        class="px-3.5 py-1.5 rounded-md text-xs font-semibold border transition-all">
+                        Todos los Frentes
+                    </button>
+                    <button 
+                        @click="timelineFilter = 'europa'"
+                        :class="timelineFilter === 'europa' ? 'bg-blue-600/20 text-blue-400 border-blue-500/50' : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'"
+                        class="px-3.5 py-1.5 rounded-md text-xs font-semibold border transition-all">
+                        Frente Europeo
+                    </button>
+                    <button 
+                        @click="timelineFilter = 'pacifico'"
+                        :class="timelineFilter === 'pacifico' ? 'bg-red-600/20 text-red-400 border-red-500/50' : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'"
+                        class="px-3.5 py-1.5 rounded-md text-xs font-semibold border transition-all">
+                        Guerra del Pacífico
+                    </button>
+                    <button 
+                        @click="timelineFilter = 'global'"
+                        :class="timelineFilter === 'global' ? 'bg-emerald-600/20 text-emerald-400 border-emerald-500/50' : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'"
+                        class="px-3.5 py-1.5 rounded-md text-xs font-semibold border transition-all">
+                        Eventos Globales/Estratégicos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Timeline Diagram -->
+            <div class="relative border-l-2 border-slate-800 ml-4 md:ml-32 py-4 space-y-12">
+                
+                <template x-for="(event, index) in filteredEvents()" :key="event.id">
+                    <div class="relative group">
+                        
+                        <!-- Timeline Pin -->
+                        <div class="absolute -left-1.5 top-1 w-3 h-3 rounded-full bg-slate-950 border-2 transition-all duration-300 group-hover:scale-150"
+                             :class="{
+                                'border-blue-500 group-hover:bg-blue-500': event.front === 'europa',
+                                'border-red-500 group-hover:bg-red-500': event.front === 'pacifico',
+                                'border-emerald-500 group-hover:bg-emerald-500': event.front === 'global'
+                             }">
+                        </div>
+
+                        <!-- Date Tag (Floating Left on MD+ screens) -->
+                        <div class="md:absolute md:right-full md:mr-8 md:top-0 text-left md:text-right mb-2 md:mb-0">
+                            <span class="block text-sm font-bold text-amber-500 tracking-wider" x-text="event.date"></span>
+                            <span class="text-xs font-semibold opacity-60 uppercase" x-text="event.year"></span>
+                        </div>
+
+                        <!-- Event Content Box -->
+                        <div class="bg-slate-900/30 border border-slate-800/80 hover:border-slate-700/80 rounded-xl p-5 ml-6 md:ml-8 transition-all duration-300 hover:bg-slate-900/50 shadow-sm relative overflow-hidden">
+                            <!-- Subtle Color Code Indicator inside Card -->
+                            <div class="absolute top-0 left-0 w-1 h-full"
+                                 :class="{
+                                    'bg-blue-500': event.front === 'europa',
+                                    'bg-red-500': event.front === 'pacifico',
+                                    'bg-emerald-500': event.front === 'global'
+                                 }">
+                            </div>
+
+                            <!-- Header Area of Card -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                <h4 class="text-lg font-bold text-slate-100 group-hover:text-amber-400 transition-colors" x-text="event.title"></h4>
+                                <span class="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded border"
+                                      :class="{
+                                        'bg-blue-950/40 text-blue-400 border-blue-900/50': event.front === 'europa',
+                                        'bg-red-950/40 text-red-400 border-red-900/50': event.front === 'pacifico',
+                                        'bg-emerald-950/40 text-emerald-400 border-emerald-900/50': event.front === 'global'
+                                      }"
+                                      x-text="event.frontName">
+                                </span>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-sm text-slate-400 leading-relaxed mb-4" x-text="event.description"></p>
+
+                            <!-- Connected Innovation Highlight -->
+                            <template x-if="event.innovation">
+                                <div class="mt-4 p-3.5 bg-slate-950/80 border border-amber-500/20 rounded-lg flex items-start gap-3.5">
+                                    <div class="p-2 bg-amber-500/10 text-amber-500 rounded-lg border border-amber-500/15">
+                                        <i :class="event.innovation.icon" class="text-sm w-4 text-center"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-amber-500 tracking-wider uppercase">Innovación Relevante</span>
+                                            <span class="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 rounded" x-text="event.innovation.tech"></span>
+                                        </div>
+                                        <h5 class="text-sm font-bold text-slate-200 mt-0.5" x-text="event.innovation.name"></h5>
+                                        <p class="text-xs text-slate-400 mt-1" x-text="event.innovation.desc"></p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+                </template>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: INNOVATIONS DETAIL GRID -->
+        <div x-show="currentTab === 'innovations'" x-transition:enter="transition ease-out duration-300 transform opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+            
+            <div class="text-center mb-12">
+                <h3 class="historical-title text-2xl md:text-3xl font-bold text-slate-200">El Laboratorio de la Guerra</h3>
+                <p class="text-slate-400 text-sm md:text-base mt-2 max-w-2xl mx-auto">
+                    La movilización de recursos estatales para la guerra impulsó investigaciones científicas e industriales a una velocidad sin precedentes históricos.
+                </p>
+            </div>
+
+            <!-- Grid of Key Technologies -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="tech in innovations" :key="tech.id">
+                    <div class="bg-slate-900/30 border border-slate-800 hover:border-amber-500/30 rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full relative group">
+                        
+                        <!-- Glow effect -->
+                        <div class="absolute -inset-px bg-gradient-to-r from-amber-500/0 to-amber-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none duration-500"></div>
+
+                        <!-- Header icon & Title -->
+                        <div class="flex items-start justify-between gap-4 mb-4 relative z-10">
+                            <div class="p-3 bg-amber-500/10 text-amber-500 rounded-lg border border-amber-500/20 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors duration-300">
+                                <i :class="tech.icon" class="text-xl w-6 text-center"></i>
+                            </div>
+                            <span class="text-[10px] bg-slate-850 text-slate-400 border border-slate-850 px-2 py-0.5 rounded font-bold uppercase tracking-wider" x-text="tech.category"></span>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex-1 relative z-10">
+                            <h4 class="text-lg font-bold text-slate-100 group-hover:text-amber-400 transition-colors" x-text="tech.name"></h4>
+                            <p class="text-sm text-slate-400 mt-2 leading-relaxed" x-text="tech.description"></p>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-t border-slate-800/80 my-4 relative z-10"></div>
+
+                        <!-- Military Impact and Civil Legacy Box -->
+                        <div class="space-y-3 relative z-10 text-xs">
+                            <div>
+                                <span class="font-bold text-red-400 uppercase tracking-wide text-[10px] block">Impacto Militar</span>
+                                <p class="text-slate-300 mt-0.5" x-text="tech.militaryImpact"></p>
+                            </div>
+                            <div>
+                                <span class="font-bold text-emerald-400 uppercase tracking-wide text-[10px] block">Legado Civil (Postguerra)</span>
+                                <p class="text-slate-300 mt-0.5" x-text="tech.civilLegacy"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- IN DEPTH CONTEXT SECTION -->
+    <section class="bg-slate-950 border-t border-slate-900 py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="historical-title text-2xl md:text-3xl text-slate-200 text-center mb-8">Reflexión Tecnológica e Histórica</h3>
+            <div class="prose prose-invert prose-amber max-w-none text-slate-400 space-y-6 text-sm md:text-base leading-relaxed">
+                <p>
+                    La Segunda Guerra Mundial suele ser estudiada principalmente bajo el prisma táctico, ideológico o de política exterior. Sin embargo, constituyó un gigantesco acelerador de revoluciones científicas. La enorme movilización económica de las potencias —un concepto conocido como <strong class="text-slate-200">"Guerra Total"</strong>— transformó los laboratorios universitarios y los hangares industriales en frentes de batalla decisivos.
+                </p>
+                <p>
+                    Tecnologías críticas como el <strong class="text-amber-400">Radar</strong> demostraron que la información y la alerta temprana poseían un valor equiparable al armamento ofensivo pesado. De la misma manera, la carrera silenciosa que libraban los criptoanalistas en instalaciones secretas como <strong class="text-slate-200">Bletchley Park</strong> cimentó las bases teóricas y técnicas de la informática contemporánea moderna mediante el diseño de las primeras máquinas de cómputo lógicas.
+                </p>
+                <p>
+                    La conclusión de la guerra en septiembre de 1945 con el empleo de la <strong class="text-red-400">bomba atómica</strong> no solo cerró un trágico capítulo bélico, sino que abrió la "Era Nuclear", alterando de forma permanente el equilibrio de la geopolítica global y forzando debates éticos sobre la responsabilidad del avance de la ciencia pura aplicada a la destrucción masiva.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 py-8 px-6 bg-slate-950 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <p>© 2026 Infografía Educativa de la Segunda Guerra Mundial.</p>
+            <p>Hecho para fines de análisis histórico y tecnológico.</p>
+        </div>
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        function wwiiApp() {
+            return {
+                currentTab: 'timeline',
+                timelineFilter: 'all',
+
+                // Events Dataset
+                events: [
+                    {
+                        id: 1,
+                        year: '1939',
+                        date: '1 de Septiembre',
+                        title: 'Invasión de Polonia por Alemania',
+                        front: 'europa',
+                        frontName: 'Frente Europeo',
+                        description: 'La Alemania nazi invade Polonia utilizando la doctrina táctica de la "Blitzkrieg" (Guerra Relámpago). Este hecho provoca la declaración de guerra de Gran Bretaña y Francia el 3 de septiembre, iniciando oficialmente la Segunda Guerra Mundial.',
+                        innovation: {
+                            name: 'Blitzkrieg (Táctica Integrada de Combate)',
+                            tech: 'Militar y Logística',
+                            icon: 'fa-solid fa-truck-monster',
+                            desc: 'Uso de columnas acorazadas rápidas apoyadas por artillería aérea coordinada por transmisiones radiales móviles.'
+                        }
+                    },
+                    {
+                        id: 2,
+                        year: '1940',
+                        date: 'Mayo — Junio',
+                        title: 'Batalla de Francia y Evacuación de Dunkerque',
+                        front: 'europa',
+                        frontName: 'Frente Europeo',
+                        description: 'Las tropas aliadas son rodeadas en la costa francesa por el avance alemán. Mediante la Operación Dinamo, más de 330.000 soldados aliados son rescatados por mar de las playas de Dunkerque, preservando el núcleo del ejército británico para el resto de la guerra.',
+                        innovation: null
+                    },
+                    {
+                        id: 3,
+                        year: '1940',
+                        date: 'Julio — Octubre',
+                        title: 'Batalla de Inglaterra',
+                        front: 'europa',
+                        frontName: 'Frente Europeo',
+                        description: 'Campaña aérea de la Luftwaffe alemana para destruir la Royal Air Force (RAF) británica como preludio a una invasión naval. Los británicos resisten con éxito, marcando el primer gran fracaso estratégico de Hitler.',
+                        innovation: {
+                            name: 'Sistema Chain Home (Radar)',
+                            tech: 'Sensores y Comunicaciones',
+                            icon: 'fa-solid fa-satellite-dish',
+                            desc: 'Una red costera de estaciones de radiolocalización que permitía a los cazas interceptar preventivamente a los escuadrones bombarderos enemigos.'
+                        }
+                    },
+                    {
+                        id: 4,
+                        year: '1941',
+                        date: '22 de Junio',
+                        title: 'Operación Barbarroja (Invasión de la URSS)',
+                        front: 'europa',
+                        frontName: 'Frente Europeo',
+                        description: 'Alemania rompe el pacto de no agresión e invade la Unión Soviética en una ofensiva de proporciones masivas a lo largo de un frente de miles de kilómetros, abriendo el devastador Frente Oriental.',
+                        innovation: {
+                            name: 'El Tanque T-34',
+                            tech: 'Blindaje y Diseño',
+                            icon: 'fa-solid fa-shield-halved',
+                            desc: 'Un tanque soviético revolucionario por su blindaje inclinado que desviaba proyectiles y su diseño simplificado para la producción en masa.'
+                        }
+                    },
+                    {
+                        id: 5,
+                        year: '1941',
+                        date: '7 de Diciembre',
+                        title: 'Ataque a Pearl Harbor',
+                        front: 'pacifico',
+                        frontName: 'Guerra del Pacífico',
+                        description: 'La Armada Imperial Japonesa ejecuta un ataque sorpresa contra la flota del Pacífico estadounidense en Hawái, destruyendo numerosos buques de guerra. Este acontecimiento provoca la entrada de los Estados Unidos en el conflicto global.',
+                        innovation: {
+                            name: 'Portaviones como Arma Hegemónica',
+                            tech: 'Estrategia Naval',
+                            icon: 'fa-solid fa-ship',
+                            desc: 'El ataque demostró que la aviación embarcada había desplazado permanentemente al acorazado tradicional como núcleo del poder naval.'
+                        }
+                    },
+                    {
+                        id: 6,
+                        year: '1942',
+                        date: '4 — 7 de Junio',
+                        title: 'Batalla de Midway',
+                        front: 'pacifico',
+                        frontName: 'Guerra del Pacífico',
+                        description: 'Punto de inflexión clave en la guerra naval del Pacífico. Las fuerzas norteamericanas, alertadas gracias a la interceptación de códigos de inteligencia de radio, emboscan y hunden cuatro portaaviones de la flota japonesa principal.',
+                        innovation: {
+                            name: 'Criptoanálisis Estratégico (Código JN-25)',
+                            tech: 'Criptografía',
+                            icon: 'fa-solid fa-key',
+                            desc: 'La descodificación precisa de planes japoneses permitió neutralizar la ventaja numérica nipona mediante el factor sorpresa.'
+                        }
+                    },
+                    {
+                        id: 7,
+                        year: '1942 — 1943',
+                        date: 'Agosto — Febrero',
+                        title: 'Batalla de Stalingrado',
+                        front: 'europa',
+                        frontName: 'Frente Europeo',
+                        description: 'La batalla más sangrienta de la historia humana (estimados de 2 millones de bajas). Tras encarnizados combates urbanos, el Sexto Ejército alemán de Paulus es cercado y obligado a rendirse, marcando el fin de la iniciativa estratégica alemana en el este.',
+                        innovation: null
+                    },
+                    {
+                        id: 8,
+                        year: '1944',
+                        date: '6 de Junio',
+                        title: 'Día D (Desembarco de Normandía)',
+                        front: 'europa',
+                        frontName: 'Frente Europeo',
+                        description: 'La Operación Overlord moviliza una de las mayores fuerzas de asalto anfibio de la historia militar a través del canal de la Mancha, abriendo con éxito un segundo frente aliado de combate terrestre en la Europa Occidental ocupada.',
+                        innovation: {
+                            name: 'Puerto Artificial Mulberry',
+                            tech: 'Ingeniería Civil y Militar',
+                            icon: 'fa-solid fa-bridge',
+                            desc: 'Puertos prefabricados masivos remolcados a través del canal para permitir el desembarco masivo de vehículos y provisiones pesadas antes de capturar puertos fijos.'
+                        }
+                    },
+                    {
+                        id: 9,
+                        year: '1945',
+                        date: '8 de Mayo',
+                        title: 'Rendición de Alemania (Día de la Victoria)',
+                        front: 'global',
+                        frontName: 'Global / Estratégico',
+                        description: 'Tras la captura soviética de Berlín y el suicidio de Adolf Hitler el 30 de abril, el alto mando militar alemán capitula incondicionalmente ante los Aliados, terminando la guerra en Europa.',
+                        innovation: {
+                            name: 'Misiles V-2 y Tecnología de Cohetería',
+                            tech: 'Misiles y Aeroespacial',
+                            icon: 'fa-solid fa-rocket',
+                            desc: 'El primer misil balístico guiado de largo alcance del mundo, diseñado por Wernher von Braun y utilizado para bombardear Londres y Amberes.'
+                        }
+                    },
+                    {
+                        id: 10,
+                        year: '1945',
+                        date: '6 — 9 de Agosto',
+                        title: 'Bombardeos Atómicos sobre Hiroshima y Nagasaki',
+                        front: 'pacifico',
+                        frontName: 'Guerra del Pacífico',
+                        description: 'Estados Unidos arroja dos bombas de fisión nuclear desarrolladas bajo el Proyecto Manhattan en las ciudades industriales de Hiroshima y Nagasaki. La devastación extrema y súbita fuerza la decisión imperial japonesa de no continuar el combate prolongado.',
+                        innovation: {
+                            name: 'La Bomba Atómica',
+                            tech: 'Física Nuclear',
+                            icon: 'fa-solid fa-radiation',
+                            desc: 'El aprovechamiento militar de la fisión nuclear del uranio-235 y plutonio-239.'
+                        }
+                    },
+                    {
+                        id: 11,
+                        year: '1945',
+                        date: '2 de Septiembre',
+                        title: 'Rendición de Japón y Fin Oficial de la Guerra',
+                        front: 'global',
+                        frontName: 'Global / Estratégico',
+                        description: 'El ministro de relaciones exteriores japonés, Mamoru Shigemitsu, y delegados aliados firman el acta oficial de rendición a bordo del acorazado USS Missouri en la bahía de Tokio, concluyendo definitivamente la Segunda Guerra Mundial.',
+                        innovation: null
+                    }
+                ],
+
+                // Innovations Detailed Dataset
+                innovations: [
+                    {
+                        id: 'rad',
+                        name: 'Radar (Radio Detection and Ranging)',
+                        category: 'Comunicaciones y Detección',
+                        icon: 'fa-solid fa-satellite-dish',
+                        description: 'Desarrollado y perfeccionado por científicos británicos y alemanes, esta tecnología permitió utilizar ondas de radio de alta frecuencia para detectar la posición, distancia y velocidad de objetos distantes.',
+                        militaryImpact: 'Salvó a Inglaterra de ser conquistada por el aire y se integró en barcos y aviones de combate para operaciones nocturnas.',
+                        civilLegacy: 'Evolucionó en los sistemas de control de tráfico aéreo civil modernos, el GPS, radares meteorológicos e incluso en el horno microondas doméstico.'
+                    },
+                    {
+                        id: 'pen',
+                        name: 'Penicilina (Producción Masiva)',
+                        category: 'Medicina e Higiene',
+                        icon: 'fa-solid fa-kit-medical',
+                        description: 'Aunque descubierta en 1928 por Fleming, no fue hasta la guerra cuando los científicos florey e Chain con apoyo industrial en EE. UU. descubrieron cómo purificarla y fabricarla a escala industrial.',
+                        militaryImpact: 'Evitó que millones de soldados murieran por infecciones bacterianas básicas tras heridas de metralla o amputaciones.',
+                        civilLegacy: 'Inauguró la era dorada de los antibióticos modernos, prolongando la expectativa de vida promedio de la humanidad de forma dramática.'
+                    },
+                    {
+                        id: 'com',
+                        name: 'Computación y Criptografía',
+                        category: 'Cómputo y Telecomunicación',
+                        icon: 'fa-solid fa-computer',
+                        description: 'La necesidad británica de descifrar la máquina alemana Enigma condujo a la construcción de "The Bombe" (diseñada por Alan Turing) y posteriormente al computador electrónico "Colossus".',
+                        militaryImpact: 'Descifró la inteligencia militar alemana de alto secreto, acortando la guerra en Europa un estimado de dos años.',
+                        civilLegacy: 'Constituyó el punto de partida técnico e intelectual de los ordenadores modernos y del software criptográfico de seguridad de la información.'
+                    },
+                    {
+                        id: 'nuc',
+                        name: 'Fisión Nuclear (Energía Atómica)',
+                        category: 'Ciencia Teórica y Armas',
+                        icon: 'fa-solid fa-radiation',
+                        description: 'El colosal Proyecto Manhattan coordinó los mayores recursos financieros y mentes científicas para lograr desatar la energía nuclear liberada por fisión controlada de uranio y plutonio.',
+                        militaryImpact: 'El desarrollo de las bombas Little Boy y Fat Man, destruyendo dos ciudades japonesas de forma instantánea.',
+                        civilLegacy: 'Dio origen a la generación de electricidad comercial mediante energía nuclear y a la medicina radioactiva para tratamientos de cáncer.'
+                    },
+                    {
+                        id: 'coo',
+                        name: 'Cohetes de Combustible Líquido (A-4 / V-2)',
+                        category: 'Ciencia Aeroespacial',
+                        icon: 'fa-solid fa-rocket',
+                        description: 'Desarrollados bajo la dirección de Wernher von Braun en Peenemünde, estos proyectiles balísticos cruzaban la estratósfera antes de impactar sin advertencia sónica.',
+                        militaryImpact: 'Arma de terror que cobró la vida de miles de civiles en ciudades aliadas en el ocaso de la guerra.',
+                        civilLegacy: 'Aportó la base científica necesaria para el inicio de la Era Espacial. Los mismos científicos y tecnología impulsaron el Programa Saturno V de la NASA que llevó al ser humano a la Luna.'
+                    },
+                    {
+                        id: 'rea',
+                        name: 'Motores de Turbina a Reacción',
+                        category: 'Aviación e Ingeniería',
+                        icon: 'fa-solid fa-plane',
+                        description: 'La transición técnica de motores de pistones tradicionales a turbinas de empuje a gas, lograda simultáneamente por Frank Whittle en Inglaterra y Hans von Ohain en Alemania.',
+                        militaryImpact: 'Despliegue de los primeros aviones de caza de alta velocidad operativa (ej. Messerschmitt Me 262 o Gloster Meteor).',
+                        civilLegacy: 'Transformó radicalmente la aviación comercial de la postguerra, haciendo posible el transporte aéreo de pasajeros intercontinental veloz y a gran escala.'
+                    }
+                ],
+
+                // Filter logic
+                filteredEvents() {
+                    if (this.timelineFilter === 'all') {
+                        return this.events;
+                    }
+                    return this.events.filter(event => event.front === this.timelineFilter);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
